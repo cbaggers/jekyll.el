@@ -23,18 +23,25 @@
 
 (provide 'jekyll)
 
-(defvar jekyll-directory nil
+(defvar jekyll-directory "/home/baggers/Code/.blog/cbaggers.github.com"
   "Path to Jekyll blog.")
-(defvar jekyll-drafts-dir "_drafts/"
+(defvar jekyll-drafts-dir "/_drafts/"
   "Relative path to drafts directory.")
-(defvar jekyll-posts-dir "_posts/"
+(defvar jekyll-posts-dir "/_posts/"
   "Relative path to posts directory.")
-(defvar jekyll-post-ext ".markdown"
+(defvar jekyll-post-ext ".md"
   "File extension of Jekyll posts.")
 (defvar jekyll-post-template 
-  "---\ntitle: %s\n---\n\n"
+  "---
+layout: post
+title: %s
+description:
+date: %s
+category:
+tags: ['lisp', 'cepl']
+---"
   "Default template for Jekyll posts.  %s will be replace by the post title.")
-
+;;YYYY-MM-DD HH:mm:SS
 (defun jekyll-make-slug (s)
   "Turn a string into a slug."
   (replace-regexp-in-string 
@@ -58,7 +65,8 @@
     (if (file-exists-p draft-file)
         (find-file draft-file)
       (find-file draft-file)
-      (insert (format jekyll-post-template (jekyll-yaml-escape title))))))
+      (insert (format jekyll-post-template (jekyll-yaml-escape title)
+                      (format-time-string "%Y-%m-%d %T"))))))
 
 (defun jekyll-publish-post ()
   "Move a draft post to the posts directory, and rename it so that it
